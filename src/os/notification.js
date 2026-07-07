@@ -62,6 +62,16 @@ export function notifyForEvent(evt, characters) {
   }
 }
 
+// 프로그램 해금(설치) 알림
+export function notifyAppInstalled(appId, appName) {
+  notify({
+    glyph: '⊞',
+    title: '새 프로그램 설치됨',
+    body: appName ?? appId,
+    appId,
+  });
+}
+
 function escapeHtml(str) {
   const d = document.createElement('div');
   d.textContent = str ?? '';

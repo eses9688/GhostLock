@@ -17,7 +17,7 @@ import { APPS, getApp, isUnlocked } from './apps.js';
 import { initDesktop, renderDesktop } from './desktop.js';
 import { initWindows, openWindow, closeWindow, refreshWindow, getOpenApp } from './windowManager.js';
 import { initStoryOverlay, showStory, hideStory, isStoryOpen } from './storyOverlay.js';
-import { initNotifications, notifyForEvent } from './notification.js';
+import { initNotifications, notifyForEvent, notifyAppInstalled } from './notification.js';
 
 import eventsData from '../data/events.json';
 import initialStateData from '../data/initialState.json';
@@ -94,6 +94,7 @@ function runStory(eventId) {
   const { state, deliver: toDeliver } = enterEvent(os.state, event);
   os.state = state;
   dispatchDeliver(toDeliver);
+  notifyUnlocks(event.effects);
 
   // 진입 효과로 시간이 점프했으면(예: 챕터 경계) 만료/예약뉴스 체크
   if (absOf(os.state.time) > beforeHour) {
@@ -122,6 +123,7 @@ function handleStoryChoice(event, choiceIndex) {
   os.state = state;
 
   dispatchDeliver(toDeliver);
+  notifyUnlocks(choice?.effects);
   if (timeAdvanced) {
     os.state = checkExpiries(os.state, os.eventMap);
     // 예약 발행 뉴스: 발행 시각이 됐으면 등장 + 알림
@@ -151,6 +153,16 @@ function handleStoryChoice(event, choiceIndex) {
 }
 
 // deliver 목록을 상태에 반영하고, 각 이벤트를 알림으로 띄운다
+// 효과 배열에서 unlock을 찾아 "새 프로그램 설치됨" 알림을 띄운다.
+function notifyUnlocks(effects) {
+  for (const eff of effects ?? []) {
+    if (eff?.type === 'unlock') {
+      const app = getApp(eff.app);
+      notifyAppInstalled(eff.app, app?.name ?? eff.app);
+    }
+  }
+}
+
 function dispatchDeliver(ids) {
   if (!ids?.length) return;
   os.state = deliver(os.state, ids, os.eventMap);

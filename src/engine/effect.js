@@ -57,6 +57,14 @@ function applyOne(state, effect) {
       };
     }
 
+    case 'unlock': {
+      // 프로그램 해금: flags에 unlock_<app> 을 세운다. (세이브에 자동 보존)
+      return {
+        ...state,
+        flags: { ...state.flags, [`unlock_${effect.app}`]: true },
+      };
+    }
+
     case 'time': {
       return advanceTime(state, effect.value);
     }

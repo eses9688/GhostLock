@@ -19,6 +19,9 @@ export function isUnlocked(app, state) {
   try { return app.unlock(state); } catch { return false; }
 }
 
+// 특정 해금 플래그(unlock_<app>)가 있으면 열림. 스토리의 unlock 효과로 세워진다.
+const unlockedBy = (appId) => (state) => Boolean(state.flags?.[`unlock_${appId}`]);
+
 export const APPS = [
   {
     id: 'mail',
@@ -64,14 +67,14 @@ export const APPS = [
     id: 'wallet',
     name: 'Wallet',
     glyph: '💰',
-    unlock: null,   // C단계에서 해금 조건 부여 예정
+    unlock: unlockedBy('wallet'),
     render(bodyEl, ctx) { renderWallet({ root: bodyEl, state: ctx.state }); },
   },
   {
     id: 'news',
     name: 'News',
     glyph: '📰',
-    unlock: null,
+    unlock: unlockedBy('news'),
     render(bodyEl, ctx) {
       renderNews({
         root: bodyEl,
@@ -87,14 +90,14 @@ export const APPS = [
     id: 'monitor',
     name: 'Monitor',
     glyph: '📊',
-    unlock: null,
+    unlock: unlockedBy('monitor'),
     render(bodyEl, ctx) { renderMonitor({ root: bodyEl, state: ctx.state }); },
   },
   {
     id: 'notes',
     name: 'Notes',
     glyph: '📝',
-    unlock: null,
+    unlock: unlockedBy('notes'),
     render(bodyEl, ctx) { renderNotes({ root: bodyEl, state: ctx.state, characters: ctx.characters }); },
   },
 

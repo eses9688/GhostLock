@@ -102,7 +102,8 @@
             "value": 1,
             "toast": "GHOST가 당신에게 만족한 듯합니다.",
             "tone": "good"
-          }
+          },
+          { "type": "unlock", "app": "wallet" }
         ],
         "cost": 2
       },
@@ -122,7 +123,8 @@
           {
             "type": "stress",
             "value": 3
-          }
+          },
+          { "type": "unlock", "app": "wallet" }
         ],
         "cost": 2
       }
@@ -297,7 +299,8 @@
       {
         "type": "time",
         "value": 72
-      }
+      }, 
+      { "type": "unlock", "app": "news" }
     ],
     "choices": [
       {
