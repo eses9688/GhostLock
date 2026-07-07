@@ -30,7 +30,16 @@ function clamp(field, val) {
 // 단일 효과를 state에 적용 → 새 state
 function applyOne(state, effect) {
   switch (effect.type) {
-    case 'money':
+    case 'money': {
+      const next = (state.money ?? 0) + effect.value;
+      const entry = { amount: effect.value, reason: effect.reason ?? '', at: state.time };
+      return {
+        ...state,
+        money: clamp('money', next),
+        ledger: [entry, ...(state.ledger ?? [])],
+      };
+    }
+
     case 'stress':
     case 'rank': {
       const next = (state[effect.type] ?? 0) + effect.value;

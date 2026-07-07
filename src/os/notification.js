@@ -57,6 +57,8 @@ export function notifyForEvent(evt, characters) {
     const sender = characters[evt.sender]?.name ?? evt.sender ?? '';
     const first = (evt.messages ?? []).find((m) => m.text)?.text ?? '';
     notify({ glyph: '💬', title: sender, body: first, appId: 'messenger' });
+  } else if (evt.kind === 'news') {
+    notify({ glyph: '📰', title: '새 기사 등록', body: evt.headline ?? '', appId: 'news' });
   }
 }
 

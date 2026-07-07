@@ -8,6 +8,10 @@
 
 import { renderMail } from '../ui/mail.js';
 import { renderChat } from '../ui/chat.js';
+import { renderWallet } from '../ui/wallet.js';
+import { renderNews } from '../ui/news.js';
+import { renderMonitor } from '../ui/monitor.js';
+import { renderNotes } from '../ui/notes.js';
 
 // 해금 조건 평가: unlock이 없으면 항상 해금. 함수면 state로 판정.
 export function isUnlocked(app, state) {
@@ -56,12 +60,46 @@ export const APPS = [
     badge: (state) => Object.values(state.unread?.chat ?? {}).reduce((a, b) => a + b, 0),
   },
 
-  // ── 아래는 2~3단계에서 구현. 지금은 잠금 아이콘으로만 노출(연출용). ──
-  { id: 'monitor', name: 'Monitor', glyph: '📊', unlock: () => false, locked: true },
-  { id: 'wallet',  name: 'Wallet',  glyph: '💰', unlock: () => false, locked: true },
-  { id: 'news',    name: 'News',    glyph: '📰', unlock: () => false, locked: true },
+  {
+    id: 'wallet',
+    name: 'Wallet',
+    glyph: '💰',
+    unlock: null,   // C단계에서 해금 조건 부여 예정
+    render(bodyEl, ctx) { renderWallet({ root: bodyEl, state: ctx.state }); },
+  },
+  {
+    id: 'news',
+    name: 'News',
+    glyph: '📰',
+    unlock: null,
+    render(bodyEl, ctx) {
+      renderNews({
+        root: bodyEl,
+        state: ctx.state,
+        eventMap: ctx.eventMap,
+        appState: ctx.appState,
+        actions: ctx.actions,
+      });
+    },
+    badge: (state) => state.unread?.news ?? 0,
+  },
+  {
+    id: 'monitor',
+    name: 'Monitor',
+    glyph: '📊',
+    unlock: null,
+    render(bodyEl, ctx) { renderMonitor({ root: bodyEl, state: ctx.state }); },
+  },
+  {
+    id: 'notes',
+    name: 'Notes',
+    glyph: '📝',
+    unlock: null,
+    render(bodyEl, ctx) { renderNotes({ root: bodyEl, state: ctx.state, characters: ctx.characters }); },
+  },
+
+  // ── 3단계에서 구현. 지금은 잠금 아이콘(연출용). ──
   { id: 'files',   name: 'Files',   glyph: '📁', unlock: () => false, locked: true },
-  { id: 'notes',   name: 'Notes',   glyph: '📝', unlock: () => false, locked: true },
   { id: 'console', name: 'Console', glyph: '💻', unlock: () => false, locked: true },
 ];
 

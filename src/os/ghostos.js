@@ -6,7 +6,7 @@
 import { createState } from '../engine/state.js';
 import { buildEventMap, enterEvent, chooseOption } from '../engine/event.js';
 import {
-  deliver, checkExpiries, markMailRead, markThreadRead, applyInlineChoice,
+  deliver, checkExpiries, checkScheduledNews, markMailRead, markNewsRead, markThreadRead, applyInlineChoice,
 } from '../engine/inbox.js';
 import { save, load } from '../engine/save.js';
 
@@ -36,6 +36,7 @@ const os = {
 // 앱 렌더러에 넘길 액션 모음
 const actions = {
   mailRead: (id) => { os.state = markMailRead(os.state, id); commit(); refreshOpenApp(); },
+  newsRead: (id) => { os.state = markNewsRead(os.state, id); commit(); refreshOpenApp(); },
   chatOpen: (who) => { os.state = markThreadRead(os.state, who); os.appState.selectedWho = who; commit(); refreshOpenApp(); },
   chatChoice: (who, eventId, idx) => {
     const { state, jumpTo } = applyInlineChoice(os.state, who, eventId, idx, os.eventMap);
@@ -87,10 +88,20 @@ function runStory(eventId) {
   const event = os.eventMap.get(eventId);
   if (!event) { console.error(`[ghostos] 존재하지 않는 이벤트: ${eventId}`); return; }
 
+  const beforeHour = absOf(os.state.time);
+
   // 진입 효과 적용 + deliver 발송
   const { state, deliver: toDeliver } = enterEvent(os.state, event);
   os.state = state;
   dispatchDeliver(toDeliver);
+
+  // 진입 효과로 시간이 점프했으면(예: 챕터 경계) 만료/예약뉴스 체크
+  if (absOf(os.state.time) > beforeHour) {
+    os.state = checkExpiries(os.state, os.eventMap);
+    const { state: ns, published } = checkScheduledNews(os.state);
+    os.state = ns;
+    for (const p of published) notifyForEvent(os.eventMap.get(p.id), os.characters);
+  }
   commit();
 
   showStory({
@@ -101,14 +112,34 @@ function runStory(eventId) {
   });
 }
 
+// 절대시간 헬퍼 (state.time → 숫자)
+function absOf(t) { return (t?.day ?? 1) * 24 + (t?.hour ?? 0); }
+
 function handleStoryChoice(event, choiceIndex) {
+  const choice = event.choices?.[choiceIndex];
   const { state, nextEventId, timeAdvanced, deliver: toDeliver } =
     chooseOption(os.state, event, choiceIndex);
   os.state = state;
 
   dispatchDeliver(toDeliver);
-  if (timeAdvanced) os.state = checkExpiries(os.state, os.eventMap);
+  if (timeAdvanced) {
+    os.state = checkExpiries(os.state, os.eventMap);
+    // 예약 발행 뉴스: 발행 시각이 됐으면 등장 + 알림
+    const { state: ns, published } = checkScheduledNews(os.state);
+    os.state = ns;
+    for (const p of published) {
+      notifyForEvent(os.eventMap.get(p.id), os.characters);
+    }
+  }
   commit();
+
+  // dismiss: true면 다음 스토리로 넘기지 않고 데스크톱으로 제어권을 넘긴다.
+  // (플레이어가 Mail 등을 직접 열어 확인하도록. 이어지는 스토리는 앱의 action이 트리거)
+  if (choice?.dismiss) {
+    hideStory();
+    renderDesktop(os.state);
+    return;
+  }
 
   if (nextEventId) {
     runStory(nextEventId);
@@ -124,7 +155,14 @@ function dispatchDeliver(ids) {
   if (!ids?.length) return;
   os.state = deliver(os.state, ids, os.eventMap);
   for (const id of ids) {
-    notifyForEvent(os.eventMap.get(id), os.characters);
+    const evt = os.eventMap.get(id);
+    // 지연 발행 뉴스는 여기서 알림을 띄우지 않는다 (발행되는 순간에만 알림).
+    // 지연 없는 뉴스는 즉시 발행되므로 알림을 띄운다.
+    if (evt?.kind === 'news') {
+      const delay = (evt.delayDays ?? 0) * 24 + (evt.delayHours ?? 0);
+      if (delay > 0) continue;
+    }
+    notifyForEvent(evt, os.characters);
   }
 }
 

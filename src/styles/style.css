@@ -592,3 +592,75 @@ body::after {
   font-size: 13px;
   letter-spacing: 0.03em;
 }
+
+/* ===== Wallet ===== */
+.wallet { display: flex; flex-direction: column; gap: 18px; }
+.wallet-balance {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 20px; background: #0a1116; border: 1px solid var(--phos-dim);
+}
+.wallet-label { font-size: 12px; color: var(--ink-dim); letter-spacing: 0.06em; }
+.wallet-amount { font-size: 32px; color: var(--phos); text-shadow: var(--glow); }
+.wallet-stats { display: flex; gap: 12px; }
+.wallet-stat {
+  flex: 1; display: flex; flex-direction: column; gap: 4px;
+  padding: 12px 14px; border: 1px solid var(--line); background: #0a1116;
+}
+.wallet-stat span { font-size: 11px; color: var(--ink-dim); }
+.wallet-stat b { font-size: 16px; color: var(--ink); font-weight: 500; }
+.wallet-ledger-title { font-size: 12px; color: var(--ink-dim); letter-spacing: 0.08em; margin-top: 4px; }
+.wallet-ledger { display: flex; flex-direction: column; }
+.ledger-row {
+  display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center;
+  padding: 9px 4px; border-bottom: 1px solid var(--line); font-size: 13px;
+}
+.ledger-day { color: var(--ink-dim); font-size: 11px; }
+.ledger-reason { color: var(--ink); }
+.ledger-amt.ledger-in { color: var(--phos); }
+.ledger-amt.ledger-out { color: var(--danger); }
+.wallet-empty, .news-empty, .notes-empty { color: var(--ink-dim); font-style: italic; padding: 30px 8px; text-align: center; }
+
+/* ===== News ===== */
+.news-layout { display: grid; grid-template-columns: minmax(200px, 280px) 1fr; min-height: 320px; }
+.news-list { list-style: none; margin: 0; padding: 0; border-right: 1px solid var(--line); }
+.news-row {
+  display: flex; flex-direction: column; gap: 3px; position: relative;
+  padding: 12px 14px; border-bottom: 1px solid var(--line); cursor: pointer; transition: background 0.12s;
+}
+.news-row:hover { background: rgba(255,255,255,0.02); }
+.news-row.is-selected { background: rgba(255,179,71,0.06); border-left: 2px solid var(--amber); }
+.news-tag { font-size: 10px; color: var(--amber); letter-spacing: 0.08em; }
+.news-headline { font-size: 13px; color: var(--ink); line-height: 1.4; }
+.news-row.is-unread .news-headline { color: var(--phos); }
+.news-dot { position: absolute; top: 12px; right: 12px; color: var(--phos); font-size: 8px; }
+.news-reader { padding: 4px 8px 8px 22px; }
+.news-head { border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 14px; }
+.news-section { font-size: 11px; color: var(--amber); letter-spacing: 0.1em; }
+.news-title { margin: 8px 0 0; font-size: 18px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.news-body { white-space: pre-wrap; color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+/* ===== Monitor ===== */
+.monitor { display: flex; flex-direction: column; gap: 16px; }
+.mon-card {
+  display: flex; flex-direction: column; gap: 4px; padding: 18px;
+  background: #0a1116; border: 1px solid var(--phos-dim);
+}
+.mon-label { font-size: 12px; color: var(--ink-dim); letter-spacing: 0.06em; }
+.mon-value { font-size: 24px; color: var(--phos); text-shadow: var(--glow); }
+.mon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mon-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border: 1px solid var(--line); background: #0a1116;
+}
+.mon-item span { font-size: 12px; color: var(--ink-dim); }
+.mon-item b { font-size: 15px; color: var(--ink); font-weight: 500; }
+.mon-note { font-size: 12px; color: var(--ink-dim); font-style: italic; padding: 8px 2px; }
+
+/* ===== Notes ===== */
+.notes { display: flex; flex-direction: column; gap: 18px; }
+.note-block { border: 1px solid var(--line); background: #0a1116; padding: 14px; }
+.note-h { font-size: 11px; color: var(--phos); letter-spacing: 0.1em; margin-bottom: 8px; opacity: 0.85; }
+.note-line { font-size: 13px; color: var(--ink); padding: 4px 0; line-height: 1.5; }
+.note-sub { color: var(--ink-dim); font-size: 12px; margin-left: 8px; }
+
+.news-lede { color: var(--amber); }

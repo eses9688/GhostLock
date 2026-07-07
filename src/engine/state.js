@@ -49,8 +49,16 @@ export function createState(partial = {}) {
     // ── CHAT: 인물별 대화 스레드 ──
     // { REN: { messages: [...], read, pending: {eventId, deadline, penalized}|null } }
     threads: partial.threads ?? {},
-    // ── 안 읽음 배지 ── { mail: N, chat: { REN: N } }
-    unread: partial.unread ?? { mail: 0, chat: {} },
+    // ── NEWS: 도착한 기사 ── [{ id, arrivedAt, read }]
+    news: partial.news ?? [],
+    // ── 예약 발행 대기 뉴스 ── [{ id, publishAt(절대시간), occurredAt(사건발생 절대시간) }]
+    pendingNews: partial.pendingNews ?? [],
+    // ── LEDGER: 자금 변동 내역 (Wallet 최근 입금용) ── [{ amount, reason, at }]
+    ledger: partial.ledger ?? [],
+    // ── NOTES: 자동 기록된 정보 ── [{ title, body, at }]
+    notes: partial.notes ?? [],
+    // ── 안 읽음 배지 ── { mail: N, chat: { REN: N }, news: N }
+    unread: partial.unread ?? { mail: 0, chat: {}, news: 0 },
   };
 }
 
