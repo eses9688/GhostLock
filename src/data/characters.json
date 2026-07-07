@@ -1,0 +1,20 @@
+{
+  "player": {
+    "id": "player",
+    "handle": "unknown_user",
+    "realName": null,
+    "note": "보안 전공. 학자금 대출. 최근 인턴 계약 종료."
+  },
+  "npc": {
+    "GHOST": {
+      "handle": "GHOST",
+      "role": "GhostLock 리크루터",
+      "note": "정체 불명."
+    },
+    "GRAY": {
+      "handle": "gray.0x",
+      "role": "동료 오퍼레이터",
+      "note": "말이 많고 실력은 확실하다."
+    }
+  }
+}

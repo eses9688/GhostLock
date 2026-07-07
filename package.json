@@ -1,0 +1,15 @@
+{
+  "name": "ghostlock",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OS UI 기반 하이퍼텍스트 내러티브 시뮬레이션 게임",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1",
+    "vite": "^5.4.0"
+  }
+}

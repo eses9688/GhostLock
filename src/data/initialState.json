@@ -1,0 +1,8 @@
+{
+  "time": { "day": 1, "hour": 3 },
+  "money": 40,
+  "stress": 10,
+  "rank": 0,
+  "flags": {},
+  "currentEventId": "EVT_INTRO"
+}
